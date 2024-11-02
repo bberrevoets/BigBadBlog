@@ -12,11 +12,11 @@ builder.Services.AddTransient<IPostRepository, MarkdownPostRepository>();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
+                                                        options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+       .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
@@ -33,7 +33,7 @@ else
     app.UseHsts();
 }
 
-app.Map("/Posts", (HttpContext ctx) => { return HttpStatusCode.NotFound; });
+app.Map("/Posts", (HttpContext _) => HttpStatusCode.NotFound);
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

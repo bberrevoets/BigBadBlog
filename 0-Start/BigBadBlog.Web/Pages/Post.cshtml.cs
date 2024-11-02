@@ -6,16 +6,16 @@ namespace BigBadBlog.Web.Pages;
 
 public class PostModel : PageModel
 {
-    private readonly IPostRepository _postRepository;
-    public readonly MarkdownPipeline MarkdownPipeline;
+    private readonly IPostRepository  _postRepository;
+    public readonly  MarkdownPipeline MarkdownPipeline;
 
     public PostModel(IPostRepository postRepository, IWebHostEnvironment host)
     {
         _postRepository = postRepository;
 
         MarkdownPipeline = new MarkdownPipelineBuilder()
-            .UseYamlFrontMatter()
-            .Build();
+                           .UseYamlFrontMatter()
+                           .Build();
     }
 
     public (PostMetadata Metadata, string Content) Post { get; private set; }
@@ -24,7 +24,10 @@ public class PostModel : PageModel
     {
         Post = await _postRepository.GetPostAsync(slug);
 
-        if (Post == default) return NotFound();
+        if (Post == default)
+        {
+            return NotFound();
+        }
 
         return Page();
     }

@@ -10,13 +10,13 @@ namespace BigBadBlog.Web.Data;
 public class MarkdownPostRepository : IPostRepository
 {
     private static readonly Dictionary<PostMetadata, string> _posts = new();
-    private readonly MarkdownPipeline _MarkdownPipeline;
+    private readonly        MarkdownPipeline                 _MarkdownPipeline;
 
     public MarkdownPostRepository()
     {
         _MarkdownPipeline = new MarkdownPipelineBuilder()
-            .UseYamlFrontMatter()
-            .Build();
+                            .UseYamlFrontMatter()
+                            .Build();
 
         if (!_posts.Any())
         {
@@ -40,16 +40,16 @@ public class MarkdownPostRepository : IPostRepository
     public Task<IEnumerable<(PostMetadata, string)>> GetPostsAsync(int count, int page)
     {
         count = count < 1 ? 10 : count;
-        page = page < 1 ? 1 : page;
+        page  = page  < 1 ? 1 : page;
 
         return _posts.Any()
-            ? Task.FromResult(_posts
-                .OrderByDescending(p => p.Key.Date)
-                .Skip((page - 1) * count)
-                .Take(count)
-                .Select(p => (p.Key, p.Value))
-                .AsEnumerable())
-            : Task.FromResult(Enumerable.Empty<(PostMetadata, string)>());
+                   ? Task.FromResult(_posts
+                                     .OrderByDescending(p => p.Key.Date)
+                                     .Skip((page - 1) * count)
+                                     .Take(count)
+                                     .Select(p => (p.Key, p.Value))
+                                     .AsEnumerable())
+                   : Task.FromResult(Enumerable.Empty<(PostMetadata, string)>());
     }
 
     private (PostMetadata, string) ExtractMetadataFromFile(string fileName)
@@ -58,22 +58,24 @@ public class MarkdownPostRepository : IPostRepository
         var content = File.ReadAllText(fileName);
 
         var yamlBlock = Markdown.Parse(content, _MarkdownPipeline)
-            .Descendants<YamlFrontMatterBlock>()
-            .FirstOrDefault();
+                                .Descendants<YamlFrontMatterBlock>()
+                                .FirstOrDefault();
 
         var yamlDictionary = new Dictionary<string, string>();
-        foreach (var line in yamlBlock.Lines)
-            if (line.ToString().Contains(": "))
+        foreach (var line in yamlBlock!.Lines)
+        {
+            if (line.ToString()!.Contains(": "))
             {
-                var values = line.ToString().Split(": ", StringSplitOptions.TrimEntries);
+                var values = line.ToString()!.Split(": ", StringSplitOptions.TrimEntries);
                 yamlDictionary.Add(values[0].ToLower(), values[1]);
             }
+        }
 
         return (new(
-            fileName,
-            yamlDictionary["title"],
-            yamlDictionary["author"],
-            DateTime.Parse(yamlDictionary["date"])
-        ), content);
+                    fileName,
+                    yamlDictionary["title"],
+                    yamlDictionary["author"],
+                    DateTime.Parse(yamlDictionary["date"])
+                   ), content);
     }
 }

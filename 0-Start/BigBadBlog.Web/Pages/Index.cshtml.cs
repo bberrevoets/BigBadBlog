@@ -6,19 +6,19 @@ namespace BigBadBlog.Web.Pages;
 
 public class IndexModel : PageModel
 {
-    private readonly ILogger<IndexModel> _logger;
-    private readonly IPostRepository _postRepository;
-    public readonly MarkdownPipeline MarkdownPipeline;
-    public IEnumerable<(PostMetadata Metadata, string Content)> Posts;
+    private readonly ILogger<IndexModel>                                  _logger;
+    private readonly IPostRepository                                      _postRepository;
+    public readonly  MarkdownPipeline                                     MarkdownPipeline;
+    public           IEnumerable<(PostMetadata Metadata, string Content)> Posts = null!;
 
     public IndexModel(IPostRepository postRepository, ILogger<IndexModel> logger)
     {
         _postRepository = postRepository;
-        _logger = logger;
+        _logger         = logger;
 
         MarkdownPipeline = new MarkdownPipelineBuilder()
-            .UseYamlFrontMatter()
-            .Build();
+                           .UseYamlFrontMatter()
+                           .Build();
     }
 
     public async Task<IActionResult> OnGetAsync()

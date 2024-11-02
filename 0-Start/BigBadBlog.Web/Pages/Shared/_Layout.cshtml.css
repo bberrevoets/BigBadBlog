@@ -39,3 +39,7 @@ button.accept-policy {
     white-space: nowrap;
     width: 100%;
 }
+
+/* Not used for layout */
+
+.navbar-toggleable-sm { }
