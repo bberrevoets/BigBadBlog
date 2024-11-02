@@ -1,9 +1,7 @@
 global using BigBadBlog.Web.Data;
-
+using System.Net;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using BigBadBlog.Web.Data;
-using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<IPostRepository, MarkdownPostRepository>();
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
+                       throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -34,10 +33,7 @@ else
     app.UseHsts();
 }
 
-app.Map("/Posts", (HttpContext ctx) =>
-{
-	return HttpStatusCode.NotFound;
-});
+app.Map("/Posts", (HttpContext ctx) => { return HttpStatusCode.NotFound; });
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
